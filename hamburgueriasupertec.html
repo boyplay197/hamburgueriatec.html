@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-br" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hamburgueria Futebol CR7 - Tech Futurista</title>
+
+  <!-- Fonte Orbitron e Roboto Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto+Mono&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto Mono', monospace;
+      user-select: none;
+    }
+    body, html {
+      height: 100%;
+      background: #000;
+      overflow-x: hidden;
+      color: #0ff;
+      background: linear-gradient(135deg, #02041a, #000a1f 90%);
+      scroll-behavior: smooth;
+      position: relative;
+    }
+
+    /* Fundo animado Matrix-like */
+    canvas#bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      filter: brightness(0.3);
+      mix-blend-mode: screen;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 15, 30, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #0ff;
+      box-shadow:
+        0 0 8px #0ff88,
+        inset 0 -3px 12px #0ff88;
+      z-index: 1000;
+      padding: 12px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Logo com glitch animado */
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      position: relative;
+      color: #00fff7;
+      letter-spacing: 0.2em;
+      user-select: none;
+      text-transform: uppercase;
+      line-height: 1;
+      cursor: default;
+      animation: glitch 3s infinite;
+    }
+    .logo span {
+      font-size: 1.3rem;
+      color: #00ccffaa;
+      letter-spacing: 0.1em;
+      font-weight: 400;
+      margin-left: 6px;
+    }
+
+    /* Glitch keyframes */
+    @keyframes glitch {
+      0% {
+        text-shadow:
+          2px 0 #00fff7,
+          -2px 0 #00f7ff;
+      }
+      20% {
+        text-shadow:
+          -2px 0 #00f7ff,
+          2px 0 #00fff7;
+      }
+      40% {
+        text-shadow:
+          3px 0 #00c6ff,
+          -3px 0 #00ffff;
+      }
+      60% {
+        text-shadow:
+          -1px 0 #00f0ff,
+          1px 0 #00d7ff;
+      }
+      80%, 100% {
+        text-shadow:
+          2px 0 #00fff7,
+          -2px 0 #00f7ff;
+      }
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+    nav a {
+      color: #0ff;
+      text-decoration: none;
+      position: relative;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: visible;
+      transition: color 0.3s ease;
+    }
+    nav a i {
+      font-size: 1.3rem;
+      filter: drop-shadow(0 0 4px #00ffff);
+      transition: filter 0.3s ease;
+    }
+    nav a:hover {
+      color: #0ff;
+      text-shadow:
+        0 0 6px #0ff,
+        0 0 15px #0ff,
+        0 0 30px #0ff,
+        0 0 60px #0ff;
+    }
+    nav a:hover i {
+      filter: drop-shadow(0 0 15px #0ff);
+      animation: iconPulse 1.5s infinite alternate ease-in-out;
+    }
+    @keyframes iconPulse {
+      0% {
+        filter: drop-shadow(0 0 10px #0ff);
+        transform: scale(1);
+      }
+      100% {
+        filter: drop-shadow(0 0 25px #0ff);
+        transform: scale(1.2);
+      }
+    }
+
+    /* Botão Dark Mode futurista */
+    .toggle-dark {
+      background: none;
+      border: none;
+      color: #0ff;
+      font-size: 1.6rem;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.4s ease;
+      user-select: none;
+    }
+    .toggle-dark::before {
+      content: "";
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 40px; height: 40px;
+      background: linear-gradient(45deg, #0ff, #00c3ff, #00a9ff, #0ff);
+      border-radius: 50%;
+      filter: blur(6px);
+      opacity: 0.6;
+      transform: translate(-50%, -50%);
+      animation: pulseGlow 2.5s infinite ease-in-out;
+      z-index: -1;
+    }
+    .toggle-dark:hover {
+      color: #00ffff;
+      text-shadow: 0 0 12px #00ffff;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        opacity: 0.6;
+        filter: blur(6px);
+      }
+      50% {
+        opacity: 1;
+        filter: blur(12px);
+      }
+    }
+
+    /* Layout principal */
+    main {
+      max-width: 1200px;
+      margin: 100px auto 60px;
+      padding: 0 20px;
+      z-index: 10;
+      position: relative;
+    }
+
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.8rem;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #00ffff;
+      text-shadow:
+        0 0 8px #0ff,
+        0 0 20px #00dfff,
+        0 0 30px #00aaff;
+      user-select: text;
+      position: relative;
+    }
+    h2::after {
+      content: "";
+      display: block;
+      width: 150px;
+      height: 3px;
+      background: linear-gradient(90deg, #00f6ff, #00d0ff, #0077ff);
+      box-shadow:
+        0 0 15px #00f6ff,
+        0 0 25px #00d0ff;
+      margin-top: 8px;
+      border-radius: 2px;
+    }
+
+    /* Cards hamburguer com efeito neon e glitch */
+    .burger-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+    }
+    .burger-card {
+      background: #00102a;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow:
+        0 0 20px #00ffffaa,
+        inset 0 0 20px #0088ff33;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      cursor: pointer;
+      position: relative;
+      border: 1.5px solid #00ffff;
+      filter: drop-shadow(0 0 6px #0ff);
+    }
+    .burger-card::before, .burger-card::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      border-radius: 20px;
+      inset: 0;
+      mix-blend-mode: screen;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .burger-card::before {
+      box-shadow:
+        0 0 30px #00fff0,
+        0 0 45px #00fff0,
+        0 0 55px #00fff0,
+        0 0 70px #00fff0;
+      filter: blur(5px);
+    }
+    .burger-card::after {
+      box-shadow:
+        0 0 5px #00ffff,
+        0 0 10px #00ffff;
+      filter: blur(2px);
+    }
+    .burger-card:hover {
+      transform: translateY(-12px) scale(1.07);
+      box-shadow:
+        0 0 40px #00ffffee,
+        inset 0 0 40px #00ffffbb;
+      border-color: #00fff7;
+      filter: drop-shadow(0 0 12px #00f7ff);
+    }
+    .burger-card:hover::before,
+    .burger-card:hover::after {
+      opacity: 1;
+    }
+    .burger-card img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      filter: drop-shadow(0 0 10px #00ffffcc);
+      transition: filter 0.3s ease;
+    }
+    .burger-card:hover img {
+      filter: drop-shadow(0 0 20px #00ffff);
+      transform: scale(1.05);
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+    .burger-info {
+      padding: 20px 22px 28px 22px;
+      color: #a0f7ff;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 6px #00ffff99;
+    }
+    .burger-info h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      color: #00fff7;
+      margin-bottom: 8px;
+      text-shadow:
+        0 0 6px #00ffff,
+        0 0 20px #00aaff;
+    }
+    .burger-info p {
+      font-size: 1rem;
+      margin-bottom: 14px;
+      line-height: 1.4;
+      color: #8defff;
+    }
+    .burger-info span {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #00f7ff;
+      text-shadow: 0 0 15px #00ffff;
+    }
+
+    /* Refrigerantes futuristas */
+    .drinks-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      justify-content: center;
+    }
+    .drink-item {
+      background: #00102a;
+      border-radius: 18px;
+      padding: 18px 20px;
+      width: 180px;
+      box-shadow:
+        0 0 15px #00ffffcc,
+        inset 0 0 15px #0066bb33;
+      cursor: pointer;
+      color: #0ff;
+      text-align: center;
+      border: 1.8px solid #00ffff;
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+      filter: drop-shadow(0 0 7px #00ffffaa);
+      position: relative;
+    }
+    .drink-item:hover {
+      background: linear-gradient(45deg, #00ffffee, #00aaffee);
+      box-shadow:
+        0 0 30px #00ffffdd,
+        inset 0 0 30px #00ffffbb;
+      color: #001522;
+      border-color: #00dfff;
+      filter: drop-shadow(0 0 15px #00ffffdd);
+      transform: scale(1.1);
+      z-index: 5;
+    }
+    .drink-item img {
+      width: 80px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 8px #00ffffcc);
+      transition: filter 0.3s ease;
+    }
+    .drink-item:hover img {
+      filter: drop-shadow(0 0 20px #00ffffdd);
+    }
+    .drink-item p {
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-shadow:
+        0 0 6px #00ffff,
+        0 0 12px #00dfff;
+    }
+
+    /* CR7 section super tecnológico */
+    .cr7-section {
+      margin-top: 60px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      align-items: center;
+      background: #001122;
+      border-radius: 25px;
+      padding: 40px 30px;
+      box-shadow:
+        0 0 60px #00ffffaa inset,
+        0 0 60px #00ffffaa;
+      border: 2.5px solid #00ffffaa;
+      position: relative;
+    }
+    .cr7-section img {
+      width: 280px;
+      border-radius: 20px;
+      box-shadow:
+        0 0 30px #00ffffdd,
+        0 0 60px #00ffffcc;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      filter: drop-shadow(0 0 18px #00ffffee);
+      cursor: pointer;
+      user-select: none;
+    }
+    .cr7-section img:hover {
+      transform: scale(1.07) rotate(4deg);
+      box-shadow:
+        0 0 80px #00ffffff,
+        0 0 100px #00ffffff,
+        0 0 120px #00ffffff;
+      filter: drop-shadow(0 0 30px #00ffffff);
+    }
+    .cr7-info {
+      max-width: 600px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: #00ffffee;
+      text-shadow:
+        0 0 10px #00ffffbb,
+        0 0 30px #00ffffaa;
+      user-select: text;
+      letter-spacing: 0.04em;
+      position: relative;
+      border-left: 3px solid #00ffffaa;
+      padding-left: 25px;
+      min-width: 300px;
+    }
+    .cr7-info h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      color: #00ffff;
+      letter-spacing: 0.14em;
+      text-shadow:
+        0 0 15px #00ffff,
+        0 0 40px #00e0ff;
+      user-select: text;
+    }
+    .cr7-info p {
+      font-weight: 500;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      user-select: text;
+      color: #b0ffffee;
+    }
+
+    /* Scrollbar futurista */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #001022;
+      box-shadow: inset 0 0 5px #00ffff99;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #00ffffcc, #0077ffcc);
+      border-radius: 20px;
+      box-shadow: 0 0 8px #00ffffcc;
+      transition: background 0.3s ease;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #00ffff, #0099ff);
+    }
+
+    /* Responsividade */
+    @media (max-width: 880px) {
+      main {
+        margin-top: 140px;
+      }
+      nav {
+        gap: 16px;
+        font-size: 1rem;
+      }
+      .burger-grid {
+        grid-template-columns: 1fr;
+      }
+      .drink-item {
+        width: 45%;
+      }
+      .cr7-section {
+        flex-direction: column;
+        padding: 30px 15px;
+      }
+      .cr7-section img {
+        width: 90%;
+        max-width: 300px;
+      }
+      .cr7-info {
+        max-width: 100%;
+        padding-left: 12px;
+        border-left: 3px solid #00ffffaa;
+      }
+    }
+    @media (max-width: 480px) {
+      nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .drink-item {
+        width: 100%;
+      }
+      .cr7-info h2 {
+        font-size: 1.8rem;
+      }
+      .cr7-info p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fundo animado -->
+  <canvas id="bg-canvas"></canvas>
+
+  <header>
+    <div class="logo" aria-label="Logo CR7 Hamburgueria">CR7<span>Hamburgueria</span></div>
+    <nav aria-label="Menu principal">
+      <a href="#burgers" aria-label="Hambúrgueres"><i class="fa-solid fa-hamburger"></i> Burgers</a>
+      <a href="#drinks" aria-label="Refrigerantes"><i class="fa-solid fa-wine-glass"></i> Drinks</a>
+      <a href="#cr7" aria-label="CR7"><i class="fa-solid fa-football"></i> CR7</a>
+    </nav>
+    <button aria-label="Alternar modo escuro" class="toggle-dark" id="darkToggle" title="Modo Escuro / Claro">
+      <i class="fa-regular fa-moon"></i>
+    </button>
+  </header>
+
+  <main>
+    <section id="burgers" aria-labelledby="burgers-title">
+      <h2 id="burgers-title">Hambúrgueres</h2>
+      <div class="burger-grid">
+        <article class="burger-card" tabindex="0" aria-label="Hambúrguer Clássico CR7">
+          <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80" alt="Hambúrguer clássico" />
+          <div class="burger-info">
+            <h3>Clássico CR7</h3>
+            <p>Hambúrguer artesanal com queijo cheddar, alface, tomate e molho especial.</p>
+            <span>R$ 28,90</span>
+          </div>
+        </article>
+        <article class="burger-card" tabindex="0" aria-label="Hambúrguer Bacon Supremo">
+          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Hambúrguer bacon" />
+          <div class="burger-info">
+            <h3>Bacon Supremo</h3>
+            <p>Hambúrguer com bacon crocante, queijo prato e cebola caramelizada.</p>
+            <span>R$ 32,50</span>
+          </div>
+        </article>
+        <article class="burger-card" tabindex="0" aria-label="Hambúrguer Veggie Power">
+          <img src="https://images.unsplash.com/photo-1555992336-03a23c5d14f6?auto=format&fit=crop&w=600&q=80" alt="Hambúrguer vegano" />
+          <div class="burger-info">
+            <h3>Veggie Power</h3>
+            <p>Hambúrguer vegano feito com grão de bico, rúcula e molho pesto.</p>
+            <span>R$ 27,00</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="drinks" aria-labelledby="drinks-title" style="margin-top: 70px;">
+      <h2 id="drinks-title">Refrigerantes</h2>
+      <div class="drinks-list">
+        <div class="drink-item" tabindex="0" aria-label="Refrigerante Coca-Cola">
+          <img src="https://cdn-icons-png.flaticon.com/512/3059/3059327.png" alt="Refrigerante Coca-Cola" />
+          <p>Coca-Cola</p>
+        </div>
+        <div class="drink-item" tabindex="0" aria-label="Refrigerante Guaraná">
+          <img src="https://cdn-icons-png.flaticon.com/512/891/891462.png" alt="Refrigerante Guaraná" />
+          <p>Guaraná</p>
+        </div>
+        <div class="drink-item" tabindex="0" aria-label="Refrigerante Fanta Laranja">
+          <img src="https://cdn-icons-png.flaticon.com/512/3032/3032551.png" alt="Refrigerante Fanta" />
+          <p>Fanta Laranja</p>
+        </div>
+        <div class="drink-item" tabindex="0" aria-label="Refrigerante Sprite">
+          <img src="https://cdn-icons-png.flaticon.com/512/2324/2324049.png" alt="Refrigerante Sprite" />
+          <p>Sprite</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="cr7" class="cr7-section" aria-labelledby="cr7-title" style="margin-top: 70px;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Cristiano_Ronaldo_2018.jpg" alt="Cristiano Ronaldo" />
+      <div class="cr7-info">
+        <h2 id="cr7-title">CR7 - O Fenômeno</h2>
+        <p>
+          Cristiano Ronaldo, apelidado de CR7, é um dos maiores jogadores de futebol do mundo, conhecido pela sua velocidade, técnica e capacidade de decidir jogos. Inspirando nossa hamburgueria, o CR7 simboliza excelência, paixão e energia — qualidades que queremos entregar em cada mordida.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Modo escuro toggle
+    const darkToggle = document.getElementById('darkToggle');
+    const body = document.body;
+    const icon = darkToggle.querySelector('i');
+
+    darkToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      if(body.classList.contains('dark-mode')) {
+        icon.classList.replace('fa-moon', 'fa-sun');
+        document.body.style.background = '#000d19';
+      } else {
+        icon.classList.replace('fa-sun', 'fa-moon');
+        document.body.style.background = 'linear-gradient(135deg, #02041a, #000a1f 90%)';
+      }
+    });
+
+    // Fundo Matrix-like com canvas
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const letters = '01'; // simples binário pra efeito futurista
+    const fontSize = 14;
+    const columns = Math.floor(width / fontSize);
+    const drops = new Array(columns).fill(1);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = '#00ffff';
+      ctx.font = fontSize + 'px monospace';
+
+      for(let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if(drops[i] * fontSize > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 40);
+
+    // Responsividade do canvas no resize
+    window.addEventListener('resize', () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    });
+  </script>
+</body>
+</html>
